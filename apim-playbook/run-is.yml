@@ -1,0 +1,18 @@
+- hosts: km_wso2_com
+  become: true
+  tasks:
+    - name: Set Permission 
+      command: chmod -R 755 /home/wso2carbon/wso2is-6.1.0/bin/ 
+      become: yes
+    
+    - name: Add deployment.toml file
+      copy:
+        src: <path>/nodes/key-manager/deployment.toml
+        dest: /home/wso2carbon/wso2is-6.1.0/repository/conf/
+      become: yes
+
+    - name: Run wso2-identity-server
+      environment:
+        JAVA_HOME: "/usr/lib/jvm/jdk-17-oracle-x64"
+      command: sh /home/wso2carbon/wso2is-6.1.0/bin/wso2server.sh
+      become: yes

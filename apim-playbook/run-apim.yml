@@ -1,0 +1,81 @@
+- hosts: tm_wso2_com
+  become: true
+  tasks:
+    - name: Set Permission 
+      command: chmod -R 755 /home/wso2carbon/wso2am-4.2.0/bin/ 
+      become: yes
+
+    - name: Set permisson
+      command: chmod +x /home/wso2carbon/wso2am-4.2.0/diagnostics-tool/bin/diagnostics.sh
+      become: yes
+
+    - name: Run wso2 profile
+      command: sh /home/wso2carbon/wso2am-4.2.0/bin/profileSetup.sh -Dprofile=traffic-manager
+      become: yes
+    
+    - name: Add deployment.toml file
+      copy:
+        src: <path>/nodes/traffic-manager/deployment.toml
+        dest: /home/wso2carbon/wso2am-4.2.0/repository/conf/
+      become: yes
+
+    - name: Run wso2-api-manager
+      environment:
+        JAVA_HOME: "/usr/lib/jvm/jdk-17-oracle-x64"
+      command: sh /home/wso2carbon/wso2am-4.2.0/bin/api-manager.sh
+      become: yes
+
+- hosts: cp_wso2_com
+  become: true
+  tasks:
+    - name: Set Permission 
+      command: chmod -R 755 /home/wso2carbon/wso2am-4.2.0/bin/ 
+      become: yes
+
+    - name: Set permisson
+      command: chmod +x /home/wso2carbon/wso2am-4.2.0/diagnostics-tool/bin/diagnostics.sh
+      become: yes
+
+    - name: Run wso2 profile
+      command: sh /home/wso2carbon/wso2am-4.2.0/bin/profileSetup.sh -Dprofile=control-plane
+      become: yes
+    
+    - name: Add deployment.toml file
+      copy:
+        src: <path>/nodes/control-plane/deployment.toml
+        dest: /home/wso2carbon/wso2am-4.2.0/repository/conf/
+      become: yes
+
+    - name: Run wso2-api-manager
+      environment:
+        JAVA_HOME: "/usr/lib/jvm/jdk-17-oracle-x64"
+      command: sh /home/wso2carbon/wso2am-4.2.0/bin/api-manager.sh
+      become: yes
+
+
+- hosts: gw_wso2_com
+  become: true
+  tasks:
+    - name: Set Permission 
+      command: chmod -R 755 /home/wso2carbon/wso2am-4.2.0/bin/ 
+      become: yes
+
+    - name: Set permisson
+      command: chmod +x /home/wso2carbon/wso2am-4.2.0/diagnostics-tool/bin/diagnostics.sh
+      become: yes
+
+    - name: Run wso2 profile
+      command: sh /home/wso2carbon/wso2am-4.2.0/bin/profileSetup.sh -Dprofile=gateway-worker
+      become: yes
+    
+    - name: Add deployment.toml file
+      copy:
+        src: <path>/nodes/gateway-worker/deployment.toml
+        dest: /home/wso2carbon/wso2am-4.2.0/repository/conf/
+      become: yes
+
+    - name: Run wso2-api-manager
+      environment:
+        JAVA_HOME: "/usr/lib/jvm/jdk-17-oracle-x64"
+      command: sh /home/wso2carbon/wso2am-4.2.0/bin/api-manager.sh
+      become: yes

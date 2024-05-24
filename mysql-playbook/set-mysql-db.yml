@@ -1,0 +1,32 @@
+- hosts: mysql_wso2_com
+  become: true
+  tasks:
+    - name: Create /home/scripts directory
+      file:
+        path: /home/scripts
+        state: directory
+        mode: 0755
+        recurse: yes
+      become: yes
+      
+    - name: Copy files to /home/scripts directory
+      copy:
+        src: <path>/nodes/mysql-server/scripts/
+        dest: /home/scripts/
+      become: yes
+    
+    - name: Copy db create bash-script files to /home/scripts directory
+      copy:
+        src: <path>/scripts/mysql/
+        dest: /home/scripts/
+      become: yes
+
+    - name: Set execute permisson
+      command: chmod -R 755 /home/scripts/
+      become: yes
+
+    - name: Run db create bash-script file
+      command: sh /home/scripts/db-create.sh
+      become: yes
+
+    

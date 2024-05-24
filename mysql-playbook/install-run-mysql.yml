@@ -1,0 +1,35 @@
+- hosts: mysql_wso2_com
+  become: true
+
+  vars:
+    root_pass: "pass@123"
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install MySQL server
+      apt:
+        name: mysql-server
+        state: present
+
+    - name: Ensure MySQL is started and enabled
+      service:
+        name: mysql
+        state: started
+        enabled: yes
+
+    - name: Set MySQL root password
+      expect:
+        command: mysql_secure_installation
+        responses:
+          "Enter current password for root (enter for none):": ""
+          "VALIDATE PASSWORD COMPONENT can be used to test passwords\r\nand improve security. It checks the strength of password\r\nand allows the users to set only those passwords which are\r\nsecure enough. Would you like to setup VALIDATE PASSWORD component?": "n"
+          "Set root password?": "Y"
+          "New password:": "{{ root_pass }}"
+          "Re-enter new password:": "{{ root_pass }}"
+          "Remove anonymous users?": "Y"
+          "Disallow root login remotely?": "N"
+          "Remove test database and access to it?": "Y"
+          "Reload privilege tables now?": "Y"

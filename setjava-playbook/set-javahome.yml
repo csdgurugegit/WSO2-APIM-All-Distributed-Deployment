@@ -1,0 +1,31 @@
+- hosts: cp_wso2_com, tm_wso2_com, gw_wso2_com, km_wso2_com
+  become: true
+  tasks:
+    - name: Create /home/scripts directory
+      file:
+        path: /home/scripts
+        state: directory
+        mode: 0755
+      become: yes
+
+    - name: copy set-javahome.sh file to ubuntu-node
+      copy:
+        src: <path>/scripts/set-javahome.sh
+        dest: /home/scripts/
+      become: yes
+    
+    - name: Set execute permisson set-javahome.sh file
+      command: chmod +x /home/scripts/set-javahome.sh
+      become: yes
+
+    - name: Run bash script file
+      command: sh /home/scripts/set-javahome.sh
+      become: yes
+
+    - name: Save JAVA_HOME path
+      shell: source ~/.bashrc
+      args:
+        executable: /bin/bash
+      become: yes
+
+

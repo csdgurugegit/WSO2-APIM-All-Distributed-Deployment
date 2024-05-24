@@ -1,0 +1,55 @@
+- hosts: gw_wso2_com, cp_wso2_com, tm_wso2_com
+  become: true
+  tasks:
+    - name: Create /home/wso2carbon/wso2am-4.2.0 directory
+      file:
+        path: /home/wso2carbon/wso2am-4.2.0
+        state: directory
+        mode: 0755
+        recurse: yes
+      become: yes
+      
+    - name: Copy compressed wso2-apim file to ubuntu
+      copy:
+        src: <path>/wso2-packages/wso2am-4.2.0.tar.gz
+        dest: /home/wso2carbon/wso2am-4.2.0.tar.gz
+      become: yes
+
+    - name: Uncompress wso2-apim file on ubuntu
+      become: yes
+      command: tar xzf /home/wso2carbon/wso2am-4.2.0.tar.gz -C /home/wso2carbon/wso2am-4.2.0/
+
+    - name: Delete the tar.gz file
+      file:
+        path: /home/wso2carbon/wso2am-4.2.0.tar.gz
+        state: absent
+      become: yes
+
+- hosts: km_wso2_com
+  become: true
+  tasks:
+    - name: Create /home/wso2carbon/wso2is-6.1.0 directory
+      file:
+        path: /home/wso2carbon/wso2is-6.1.0
+        state: directory
+        mode: 0755
+        recurse: yes
+      become: yes
+      
+    - name: Copy compressed wso2-is file to ubuntu
+      copy:
+        src: <path>/wso2-packages/wso2is-6.1.0.tar.gz
+        dest: /home/wso2carbon/wso2is-6.1.0.tar.gz
+      become: yes
+
+    - name: Uncompress wso2-is file on ubuntu
+      become: yes
+      command: tar xzf /home/wso2carbon/wso2is-6.1.0.tar.gz -C /home/wso2carbon/wso2is-6.1.0/
+
+    - name: Delete the tar.gz file
+      file:
+        path: /home/wso2carbon/wso2is-6.1.0.tar.gz
+        state: absent
+      become: yes
+
+

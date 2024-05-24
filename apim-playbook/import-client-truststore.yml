@@ -1,0 +1,86 @@
+- hosts: cp_wso2_com
+  become: true
+  tasks:
+    - name: Copy gateway-worker public key file to control-plane security directory
+      copy:
+        src: <path>/nodes/gateway-worker/pubkey/gw.pem
+        dest: /home/wso2carbon/wso2am-4.2.0/repository/resources/security/
+      become: yes
+
+    - name: Copy key-manager public key file to control-plane security directory
+      copy:
+        src: <path>/nodes/key-manager/pubkey/km.pem
+        dest: /home/wso2carbon/wso2am-4.2.0/repository/resources/security/
+      become: yes
+
+    - name: Import key-manager public key to control-plane client-truststore.jks
+      command: >
+        keytool -import -alias kmkey -file /home/wso2carbon/wso2am-4.2.0/repository/resources/security/km.pem
+        -keystore /home/wso2carbon/wso2am-4.2.0/repository/resources/security/client-truststore.jks
+        -storepass wso2carbon -noprompt
+      become: yes
+
+    - name: Import gateway-worker public key to control-plane client-truststore.jks
+      command: >
+        keytool -import -alias gwkey -file /home/wso2carbon/wso2am-4.2.0/repository/resources/security/gw.pem
+        -keystore /home/wso2carbon/wso2am-4.2.0/repository/resources/security/client-truststore.jks
+        -storepass wso2carbon -noprompt
+      become: yes
+
+- hosts: gw_wso2_com
+  become: true
+  tasks:
+    - name: Copy control-plane public key file to gateway-worker security directory
+      copy:
+        src: <path>/nodes/control-plane/pubkey/cp.pem
+        dest: /home/wso2carbon/wso2am-4.2.0/repository/resources/security/
+      become: yes
+
+    - name: Copy key-manager public key file to gateway-worker security directory
+      copy:
+        src: <path>/nodes/key-manager/pubkey/km.pem
+        dest: /home/wso2carbon/wso2am-4.2.0/repository/resources/security/
+      become: yes
+
+    - name: Import key-manager public key to gateway-worker client-truststore.jks
+      command: >
+        keytool -import -alias kmkey -file /home/wso2carbon/wso2am-4.2.0/repository/resources/security/km.pem
+        -keystore /home/wso2carbon/wso2am-4.2.0/repository/resources/security/client-truststore.jks
+        -storepass wso2carbon -noprompt
+      become: yes
+
+    - name: Import control-plane public key to gateway-worker client-truststore.jks
+      command: >
+        keytool -import -alias cpkey -file /home/wso2carbon/wso2am-4.2.0/repository/resources/security/cp.pem
+        -keystore /home/wso2carbon/wso2am-4.2.0/repository/resources/security/client-truststore.jks
+        -storepass wso2carbon -noprompt
+      become: yes
+
+- hosts: km_wso2_com
+  become: true
+  tasks:
+    - name: Copy control-plane public key file to key-manager security directory
+      copy:
+        src: <path>/nodes/control-plane/pubkey/cp.pem
+        dest: /home/wso2carbon/wso2am-4.2.0/repository/resources/security/
+      become: yes
+
+    - name: Copy gateway-worker public key file to key-manager security directory
+      copy:
+        src: <path>/nodes/gateway-worker/pubkey/gw.pem
+        dest: /home/wso2carbon/wso2am-4.2.0/repository/resources/security/
+      become: yes
+
+    - name: Import control-plane public key to key-manager client-truststore.jks
+      command: >
+        keytool -import -alias cpkey -file /home/wso2carbon/wso2am-4.2.0/repository/resources/security/cp.pem
+        -keystore /home/wso2carbon/wso2am-4.2.0/repository/resources/security/client-truststore.jks
+        -storepass wso2carbon -noprompt
+      become: yes
+
+    - name: Import gateway-worker public key to key-manager client-truststore.jks
+      command: >
+        keytool -import -alias gwkey -file /home/wso2carbon/wso2am-4.2.0/repository/resources/security/gw.pem
+        -keystore /home/wso2carbon/wso2am-4.2.0/repository/resources/security/client-truststore.jks
+        -storepass wso2carbon -noprompt
+      become: yes

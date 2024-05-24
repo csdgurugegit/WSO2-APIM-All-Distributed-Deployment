@@ -1,0 +1,39 @@
+- hosts: cp_wso2_com, tm_wso2_com, gw_wso2_com, km_wso2_com
+  become: true
+  tasks:
+
+  - name: update debian repository
+    apt:
+      update_cache: yes
+    become: yes
+
+  - name: download Oracle Java JDK 17
+    get_url:
+      url: https://download.oracle.com/java/17/latest/jdk-17_linux-x64_bin.deb
+      dest: /tmp/jdk-17_linux-x64_bin.deb
+    become: yes
+
+  - name: preseed Oracle Java license acceptance
+    debconf:
+      name: oracle-java17-installer
+      question: 'shared/accepted-oracle-license-v1-3'
+      value: 'true'
+      vtype: 'select'
+    become: yes
+
+  - name: preseed Oracle Java license selection
+    debconf:
+      name: oracle-java17-installer
+      question: 'shared/accepted-oracle-license-v1-3'
+      value: 'true'
+      vtype: 'boolean'
+    become: yes
+
+  - name: install Oracle Java JDK 17
+    command: dpkg -i /tmp/jdk-17_linux-x64_bin.deb
+    become: yes
+
+  - name: fix missing dependencies
+    command: apt-get install -f -y
+    become: yes
+
